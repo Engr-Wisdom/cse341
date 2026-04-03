@@ -14,7 +14,7 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Z-key"
   )
-  res.setHeader("Access-Controll-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
   next()
 })
 
@@ -36,7 +36,9 @@ passport.deserializeUser((user, done) => {
 passport.use(new Strategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: process.env.GOOGLE_CALLBACK_URL
+  callbackURL: process.env.NODE_ENV === "production"
+    ? process.env.PROD_CALLBACK_URL
+    : process.env.LOCAL_CALLBACK_URL
 },
 (accessToken, refreshToken, profile, done) => {
   return done(null, profile)
