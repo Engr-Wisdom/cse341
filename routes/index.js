@@ -1,12 +1,17 @@
 const router = require("express").Router()
 
-router.use("/", require("./swagger"))
+const { ensureAuthenticated } = require("../middleware/auth")
 
+router.use("/", require("./swagger"))
 router.get("/", (req, res) => {
-    // swagger.tags-["Users"]
     res.send("Hello World!")
 })
 
-router.use("/contacts", require("./contacts"))
+router.use("/contacts", ensureAuthenticated, require("./contacts"))
+router.use("/transactions", ensureAuthenticated, require("./transactions"))
+
+router.use((req, res) => {
+    res.status(404).json({ message: "Route on found" })
+})
 
 module.exports = router

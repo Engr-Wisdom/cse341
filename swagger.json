@@ -1,73 +1,77 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Users API",
-    "description": "Users API",
+    "title": "Users & Transactions API",
+    "description": "API documentation for Contacts and Transactions",
     "version": "1.0.0"
   },
   "host": "cse341-b1le.onrender.com",
   "basePath": "/",
-  "schemes": [
-    "https"
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Enter token as: Bearer <your_token>"
+    }
+  },
+
+  "security": [
+    {
+      "Bearer": []
+    }
   ],
+
   "paths": {
     "/": {
       "get": {
-        "description": "",
+        "description": "Test route",
         "responses": {
-          "200": {
-            "description": "OK"
-          }
+          "200": { "description": "OK" }
         }
       }
     },
-    "/contacts/": {
+
+    "/contacts": {
       "get": {
-        "description": "",
+        "description": "Get all contacts",
         "responses": {
-          "200": {
-            "description": "OK"
-          }
+          "200": { "description": "OK" }
         }
       },
       "post": {
-        "description": "",
+        "description": "Create a contact",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
+              "required": ["firstName", "lastName", "email"],
               "properties": {
-                "firstName": {
-                  "example": "any"
-                },
-                "lastName": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "favoriteColor": {
-                  "example": "any"
-                },
-                "birthday": {
-                  "example": "any"
-                }
+                "firstName": { "type": "string", "example": "John" },
+                "lastName": { "type": "string", "example": "Doe" },
+                "email": { "type": "string", "example": "john@example.com" },
+                "favoriteColor": { "type": "string", "example": "Blue" },
+                "birthday": { "type": "string", "example": "1990-01-01" }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          }
+          "200": { "description": "Created successfully" }
         }
       }
     },
+
     "/contacts/{id}": {
       "get": {
-        "description": "",
+        "description": "Get contact by ID",
         "parameters": [
           {
             "name": "id",
@@ -77,13 +81,11 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          }
+          "200": { "description": "OK" }
         }
       },
       "put": {
-        "description": "",
+        "description": "Update contact",
         "parameters": [
           {
             "name": "id",
@@ -94,36 +96,25 @@
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "firstName": {
-                  "example": "any"
-                },
-                "lastName": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "favoriteColor": {
-                  "example": "any"
-                },
-                "birthday": {
-                  "example": "any"
-                }
+                "firstName": { "type": "string", "example": "John" },
+                "lastName": { "type": "string", "example": "Doe" },
+                "email": { "type": "string", "example": "john@example.com" },
+                "favoriteColor": { "type": "string", "example": "Blue" },
+                "birthday": { "type": "string", "example": "1990-01-01" }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          }
+          "200": { "description": "Updated successfully" }
         }
       },
       "delete": {
-        "description": "",
+        "description": "Delete contact",
         "parameters": [
           {
             "name": "id",
@@ -133,15 +124,144 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "200": { "description": "Deleted successfully" }
+        }
+      }
+    },
+
+    "/transactions": {
+      "get": {
+        "description": "Get all transactions",
+        "responses": {
+          "200": { "description": "OK" }
+        }
+      },
+      "post": {
+        "description": "Create a new transaction",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["amount", "date"],
+              "properties": {
+                "amount": { "type": "number", "example": 1000 },
+                "date": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2026-03-31T00:00:00Z"
+                },
+                "paymentMethod": {
+                  "type": "string",
+                  "example": "Credit Card"
+                },
+                "status": { "type": "string", "example": "Paid" },
+                "invoiceNumber": {
+                  "type": "string",
+                  "example": "INV-001"
+                },
+                "notes": {
+                  "type": "string",
+                  "example": "First payment"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2026-03-31T12:00:00Z"
+                }
+              }
+            }
           }
+        ],
+        "responses": {
+          "200": { "description": "Created successfully" },
+          "400": { "description": "Validation error" }
+        }
+      }
+    },
+
+    "/transactions/{id}": {
+      "get": {
+        "description": "Get transaction by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "404": { "description": "Not found" }
+        }
+      },
+      "put": {
+        "description": "Update transaction",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "amount": { "type": "number", "example": 1000 },
+                "date": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2026-03-31T00:00:00Z"
+                },
+                "paymentMethod": {
+                  "type": "string",
+                  "example": "Credit Card"
+                },
+                "status": { "type": "string", "example": "Paid" },
+                "invoiceNumber": {
+                  "type": "string",
+                  "example": "INV-001"
+                },
+                "notes": {
+                  "type": "string",
+                  "example": "First payment"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2026-03-31T12:00:00Z"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Updated successfully" },
+          "404": { "description": "Not found" }
+        }
+      },
+      "delete": {
+        "description": "Delete transaction",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Deleted successfully" },
+          "404": { "description": "Not found" }
         }
       }
     }
-  },
-  "schemas": [
-    "https",
-    "http"
-  ]
+  }
 }
