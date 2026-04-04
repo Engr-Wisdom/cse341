@@ -59,7 +59,8 @@
                 "email": { "type": "string", "example": "john@example.com" },
                 "favoriteColor": { "type": "string", "example": "Blue" },
                 "birthday": { "type": "string", "example": "1990-01-01" },
-                "phone": { "type": "string", "example": "08132323923"}
+                "phone": { "type": "string", "example": "08132323923"},
+                "address": { "type": "string", "example": "No 55 example street"}
               }
             }
           }
