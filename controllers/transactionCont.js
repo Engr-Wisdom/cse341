@@ -1,31 +1,57 @@
-const { trace } = require("joi")
-const mongodb = require("../database/mongodb")
-const { ObjectId } = require("mongodb")
+const mongodb = require("../database/mongodb");
+const { ObjectId } = require("mongodb");
 
-const getAllTransactions = async (req, res, next) => {
-    try {
-        const transations = await mongodb.getdb().collection("transactions").find().toArray()
-        res.status(200).json(transations)
-    } catch(error) {
-        next(error)
-    }
-}
-
-const getSingleTransaction = async (req, res, next) => {
-    try {
-        const transactionId = new ObjectId(req.params.id)
-        const transaction = await mongodb.getdb().collection("transactions").findOne({ _id: transactionId })
-        if (!transaction) {
-            return res.status(404).json({ message: "Transaction not found" })
-        }
-        res.status(200).json(transaction)
-    } catch(error) {
-        next(error)
-    }
-}
-
-const createTransaction = async (req, res, next) => {
+// GET ALL
+const getAllTransactions = async (req, res) => {
   try {
+    const transactions = await mongodb
+      .getdb()
+      .collection("transactions")
+      .find()
+      .toArray();
+
+    res.status(200).json(transactions);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch transactions" });
+  }
+};
+
+// GET SINGLE
+const getSingleTransaction = async (req, res) => {
+  try {
+    const transactionId = new ObjectId(req.params.id);
+
+    const transaction = await mongodb
+      .getdb()
+      .collection("transactions")
+      .findOne({ _id: transactionId });
+
+    if (!transaction) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    res.status(200).json(transaction);
+  } catch (error) {
+    res.status(500).json({ error: "Error retrieving transaction" });
+  }
+};
+
+// CREATE (POST)
+const createTransaction = async (req, res) => {
+  try {
+    // ✅ VALIDATION (important!)
+    if (!req.body.amount || !req.body.date || !req.body.paymentMethod) {
+      return res.status(400).json({
+        error: "amount, date, and paymentMethod are required",
+      });
+    }
+
+    if (typeof req.body.amount !== "number") {
+      return res.status(400).json({
+        error: "amount must be a number",
+      });
+    }
+
     const transaction = {
       amount: req.body.amount,
       date: new Date(req.body.date),
@@ -33,7 +59,7 @@ const createTransaction = async (req, res, next) => {
       status: req.body.status || "Pending",
       invoiceNumber: req.body.invoiceNumber,
       notes: req.body.notes,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
 
     const result = await mongodb
@@ -41,15 +67,30 @@ const createTransaction = async (req, res, next) => {
       .collection("transactions")
       .insertOne(transaction);
 
-    res.status(200).json(result);
-  } catch(error) {
-    next(error)
+    res.status(201).json(result); // ✅ FIXED
+  } catch (error) {
+    res.status(500).json({ error: "Failed to create transaction" });
   }
 };
 
-const updateTransaction = async (req, res, next) => {
+// UPDATE (PUT)
+const updateTransaction = async (req, res) => {
   try {
+    // ✅ VALIDATION
+    if (!req.body.amount || !req.body.date || !req.body.paymentMethod) {
+      return res.status(400).json({
+        error: "amount, date, and paymentMethod are required",
+      });
+    }
+
+    if (typeof req.body.amount !== "number") {
+      return res.status(400).json({
+        error: "amount must be a number",
+      });
+    }
+
     const transactionId = new ObjectId(req.params.id);
+
     const transaction = {
       amount: req.body.amount,
       date: new Date(req.body.date),
@@ -57,31 +98,41 @@ const updateTransaction = async (req, res, next) => {
       status: req.body.status || "Pending",
       invoiceNumber: req.body.invoiceNumber,
       notes: req.body.notes,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
 
     const result = await mongodb
       .getdb()
       .collection("transactions")
       .replaceOne({ _id: transactionId }, transaction);
-    res.status(200).send(result);
 
-  } catch(error) {
-    next(error)
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update transaction" });
   }
 };
 
-const deleteTransaction = async (req, res, next) => {
+// DELETE
+const deleteTransaction = async (req, res) => {
   try {
     const id = new ObjectId(req.params.id);
-    const transaction = await mongodb.getdb().collection("transactions").deleteOne({ _id: id });
-    if (!transaction.deletedCount === 0) {
-      res.status(404).json({ message: "Transaction not found" })
-    }
-    res.status(200).send(transaction);
 
-  } catch(error) {
-    next(error)
+    const result = await mongodb
+      .getdb()
+      .collection("transactions")
+      .deleteOne({ _id: id });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    res.status(200).json({ message: "Deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete transaction" });
   }
 };
 
