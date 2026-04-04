@@ -33,6 +33,8 @@ const createContact = async (req, res, next) => {
       email: req.body.email,
       favoriteColor: req.body.favoriteColor,
       birthday: req.body.birthday,
+      phone: req.body.phone,
+      address: req.body.address
     };
 
     const result = await mongodb
@@ -55,6 +57,8 @@ const updateContact = async (req, res, next) => {
       email: req.body.email,
       favoriteColor: req.body.favoriteColor,
       birthday: req.body.birthday,
+      phone: req.body.phone,
+      address: req.body.address
     };
 
     const result = await mongodb
