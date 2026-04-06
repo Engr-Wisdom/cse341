@@ -264,6 +264,87 @@
           "404": { "description": "Not found" }
         }
       }
+    },
+
+    "/accounts": {
+      "get": {
+        "description": "Get all accounts",
+        "responses": {
+          "200": { "description": "OK" }
+        }
+      },
+      "post": {
+        "description": "Create a new account",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["userId", "bankName", "accountNumber", "accountType"],
+              "properties": {
+                "userId": { "type": "string", "example": "user123" },
+                "bankName": { "type": "string", "example": "First Bank" },
+                "accountNumber": { "type": "string", "example": "1234567890" },
+                "accountType": { "type": "string", "example": "savings" },
+                "balance": { "type": "number", "example": 5000 },
+                "currency": { "type": "string", "example": "NGN" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": { "description": "Created successfully" },
+          "400": { "description": "Validation error" }
+        }
+      }
+    },
+
+    "/accounts/{id}": {
+      "get": {
+        "description": "Get account by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "404": { "description": "Not found" }
+        }
+      },
+      "put": {
+        "description": "Update account fields",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "balance": { "type": "number", "example": 200000 },
+                "currency": { "type": "string", "example": "USD" },
+                "accountType": { "type": "string", "example": "current" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Updated successfully" },
+          "404": { "description": "Not found" }
+        }
+      },
+      "delete": {
+        "description": "Delete account",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": { "description": "Deleted successfully" },
+          "404": { "description": "Not found" }
+        }
+      }
     }
   }
 }

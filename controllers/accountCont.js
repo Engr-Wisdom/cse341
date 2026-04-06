@@ -61,18 +61,19 @@ const createAccount = async (req, res, next) => {
 const updateAccount = async (req, res, next) => {
   try {
     const accountId = req.params.id;
-    const { bankName, accountNumber, accountType, balance, currency } = req.body;
+    if (!ObjectId.isValid(accountId)) {
+      return res.status(400).json({ error: "Invalid account ID" })
+    }
+    const { balance, currency, accountType } = req.body;
 
-    if (!bankName && !accountNumber && !accountType && balance === undefined && !currency) {
+    if (balance === undefined && !currency && !accountType) {
       return res.status(400).json({ error: "No fields provided to update" });
     }
 
     const updatedFields = {};
-    if (bankName) updatedFields.bankName = bankName;
-    if (accountNumber) updatedFields.accountNumber = accountNumber;
-    if (accountType) updatedFields.accountType = accountType;
     if (balance !== undefined) updatedFields.balance = balance;
     if (currency) updatedFields.currency = currency;
+    if (accountType) updatedFields.accountType = accountType;
 
     updatedFields.updatedAt = new Date();
 
@@ -80,7 +81,7 @@ const updateAccount = async (req, res, next) => {
       .getdb()
       .collection("accounts")
       .updateOne(
-        { _id: new require("mongodb").ObjectId(accountId) },
+        { _id: new ObjectId(accountId) },
         { $set: updatedFields }
       );
 
