@@ -11,9 +11,9 @@ const transactionSchema = Joi.object({
     "date.empty": "Date is required"
   }),
 
-  paymentMethod: Joi.string().valid("Cash", "Card", "Bank Transfer").required().messages({
+  paymentMethod: Joi.string().valid("Cash", "Card", "Bank").required().messages({
     "string.empty": "Payment Method is required",
-    "any.only": "Payment Method must be Cash, Card, or Bank Transfer"
+    "any.only": "Payment Method must be Cash, Card, or Bank"
   }),
 
   status: Joi.string().valid("Pending", "Completed", "Failed").optional(),

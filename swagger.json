@@ -157,9 +157,9 @@
                 },
                 "paymentMethod": {
                   "type": "string",
-                  "example": "Credit Card"
+                  "example": "Cash"
                 },
-                "status": { "type": "string", "example": "Paid" },
+                "status": { "type": "string", "example": "Pending" },
                 "invoiceNumber": {
                   "type": "string",
                   "example": "INV-001"
@@ -167,11 +167,6 @@
                 "notes": {
                   "type": "string",
                   "example": "First payment"
-                },
-                "createdAt": {
-                  "type": "string",
-                  "format": "date-time",
-                  "example": "2026-03-31T12:00:00Z"
                 }
               }
             }
