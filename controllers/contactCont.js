@@ -50,7 +50,7 @@ const createContact = async (req, res, next) => {
       .collection("contacts")
       .insertOne(contact);
 
-    res.status(201).json(result); // ✅ FIXED
+    res.status(201).json(result);
   } catch (error) {
     res.status(500).json({ error: "Failed to create contact" });
   }

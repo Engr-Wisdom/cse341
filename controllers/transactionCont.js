@@ -39,7 +39,6 @@ const getSingleTransaction = async (req, res) => {
 // CREATE (POST)
 const createTransaction = async (req, res) => {
   try {
-    // ✅ VALIDATION (important!)
     if (!req.body.amount || !req.body.date || !req.body.paymentMethod) {
       return res.status(400).json({
         error: "amount, date, and paymentMethod are required",
@@ -67,7 +66,7 @@ const createTransaction = async (req, res) => {
       .collection("transactions")
       .insertOne(transaction);
 
-    res.status(201).json(result); // ✅ FIXED
+    res.status(201).json(result);
   } catch (error) {
     res.status(500).json({ error: "Failed to create transaction" });
   }
@@ -76,7 +75,6 @@ const createTransaction = async (req, res) => {
 // UPDATE (PUT)
 const updateTransaction = async (req, res) => {
   try {
-    // ✅ VALIDATION
     if (!req.body.amount || !req.body.date || !req.body.paymentMethod) {
       return res.status(400).json({
         error: "amount, date, and paymentMethod are required",

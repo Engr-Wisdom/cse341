@@ -9,6 +9,7 @@ router.get("/", (req, res) => {
 
 router.use("/contacts", ensureAuthenticated, require("./contacts"))
 router.use("/transactions", ensureAuthenticated, require("./transactions"))
+router.use("/accounts", require("./accounts"))
 
 router.use((req, res) => {
     res.status(404).json({ message: "Route on found" })
