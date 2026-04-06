@@ -54,4 +54,20 @@ const updateAccountSchema = Joi.object({
   "object.min": "At least one field (balance, currency, accountType) is required to update"
 });
 
-module.exports = { accountSchema, updateAccountSchema };
+const validateAccount = (req, res, next) => {
+  const { error } = accountSchema.validate(req.body, { abortEarly: true })
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
+  next();
+}
+
+const validateUpdateAccount = (req, res, next) => {
+  const { error } = updateAccountSchema.validate(req.body, { abortEarly: true });
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
+  next();
+}
+
+module.exports = { validateAccount, validateUpdateAccount };
