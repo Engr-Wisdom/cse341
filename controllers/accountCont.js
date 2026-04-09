@@ -43,7 +43,7 @@ const createAccount = async (req, res, next) => {
       accountNumber,
       accountType,
       balance: balance || 0,
-      currency: currency || "NGN",
+      currency: currency || "USD",
       createdAt: new Date(),
       updatedAt: new Date(),
     };

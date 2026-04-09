@@ -54,13 +54,13 @@
               "type": "object",
               "required": ["firstName", "lastName", "email"],
               "properties": {
-                "firstName": { "type": "string", "example": "John" },
-                "lastName": { "type": "string", "example": "Doe" },
-                "email": { "type": "string", "example": "john@example.com" },
-                "favoriteColor": { "type": "string", "example": "Blue" },
-                "birthday": { "type": "string", "example": "1990-01-01" },
-                "phone": { "type": "string", "example": "08132323923"},
-                "address": { "type": "string", "example": "No 55 example street"}
+                "firstName": { "type": "string", "example": "" },
+                "lastName": { "type": "string", "example": "" },
+                "email": { "type": "string", "example": "" },
+                "favoriteColor": { "type": "string", "example": "" },
+                "birthday": { "type": "string", "example": "" },
+                "phone": { "type": "string", "example": ""},
+                "address": { "type": "string", "example": ""}
               }
             }
           }
@@ -102,11 +102,11 @@
             "schema": {
               "type": "object",
               "properties": {
-                "firstName": { "type": "string", "example": "John" },
-                "lastName": { "type": "string", "example": "Doe" },
-                "email": { "type": "string", "example": "john@example.com" },
-                "favoriteColor": { "type": "string", "example": "Blue" },
-                "birthday": { "type": "string", "example": "1990-01-01" }
+                "firstName": { "type": "string", "example": "" },
+                "lastName": { "type": "string", "example": "" },
+                "email": { "type": "string", "example": "" },
+                "favoriteColor": { "type": "string", "example": "" },
+                "birthday": { "type": "string", "example": "" }
               }
             }
           }
@@ -149,7 +149,7 @@
               "type": "object",
               "required": ["amount", "date"],
               "properties": {
-                "amount": { "type": "number", "example": 1000 },
+                "amount": { "type": "number", "example": 0 },
                 "date": {
                   "type": "string",
                   "format": "date-time",
@@ -162,11 +162,11 @@
                 "status": { "type": "string", "example": "Pending" },
                 "invoiceNumber": {
                   "type": "string",
-                  "example": "INV-001"
+                  "example": ""
                 },
                 "notes": {
                   "type": "string",
-                  "example": "First payment"
+                  "example": ""
                 }
               }
             }
@@ -211,7 +211,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "amount": { "type": "number", "example": 1000 },
+                "amount": { "type": "number", "example": 0 },
                 "date": {
                   "type": "string",
                   "format": "date-time",
@@ -219,16 +219,16 @@
                 },
                 "paymentMethod": {
                   "type": "string",
-                  "example": "Credit Card"
+                  "example": "Card"
                 },
                 "status": { "type": "string", "example": "Paid" },
                 "invoiceNumber": {
                   "type": "string",
-                  "example": "INV-001"
+                  "example": ""
                 },
                 "notes": {
                   "type": "string",
-                  "example": "First payment"
+                  "example": ""
                 },
                 "createdAt": {
                   "type": "string",
@@ -279,12 +279,12 @@
               "type": "object",
               "required": ["userId", "bankName", "accountNumber", "accountType"],
               "properties": {
-                "userId": { "type": "string", "example": "user123" },
-                "bankName": { "type": "string", "example": "First Bank" },
-                "accountNumber": { "type": "string", "example": "1234567890" },
+                "userId": { "type": "string", "example": "" },
+                "bankName": { "type": "string", "example": "" },
+                "accountNumber": { "type": "number", "example": "" },
                 "accountType": { "type": "string", "example": "savings" },
-                "balance": { "type": "number", "example": 5000 },
-                "currency": { "type": "string", "example": "NGN" }
+                "balance": { "type": "number", "example": 0 },
+                "currency": { "type": "string", "example": "USD" }
               }
             }
           }
@@ -318,9 +318,9 @@
             "schema": {
               "type": "object",
               "properties": {
-                "balance": { "type": "number", "example": 200000 },
+                "balance": { "type": "number", "example": 0 },
                 "currency": { "type": "string", "example": "USD" },
-                "accountType": { "type": "string", "example": "current" }
+                "accountType": { "type": "string", "example": "savings" }
               }
             }
           }
@@ -338,6 +338,107 @@
         "responses": {
           "200": { "description": "Deleted successfully" },
           "404": { "description": "Not found" }
+        }
+      }
+    },
+
+    "/users": {
+      "get": {
+        "description": "Get all users",
+        "responses": {
+          "200": { "description": "OK" }
+        }
+      },
+      "post": {
+        "description": "Create a new user",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["firstName", "lastName", "email", "password"],
+              "properties": {
+                "firstName": { "type": "string", "example": "John" },
+                "lastName": { "type": "string", "example": "Doe" },
+                "email": { "type": "string", "example": "john@example.com" },
+                "password": { "type": "string", "example": "password123" },
+                "role": { "type": "string", "example": "user" },
+                "phone": { "type": "string", "example": "+2348012345678" },
+                "address": { "type": "string", "example": "Port Harcourt, Nigeria" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": { "description": "User created successfully" },
+          "400": { "description": "Validation error" }
+        }
+      }
+    },
+
+    "/users/{id}": {
+      "get": {
+        "description": "Get user by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "404": { "description": "User not found" }
+        }
+      },
+      "put": {
+        "description": "Update user",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "firstName": { "type": "string", "example": "John" },
+                "lastName": { "type": "string", "example": "Doe" },
+                "email": { "type": "string", "example": "john@example.com" },
+                "role": { "type": "string", "example": "admin" },
+                "phone": { "type": "string", "example": "+2348012345678" },
+                "address": { "type": "string", "example": "Lagos, Nigeria" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "User updated successfully" },
+          "400": { "description": "Validation error" },
+          "404": { "description": "User not found" }
+        }
+      },
+      "delete": {
+        "description": "Delete user",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "User deleted successfully" },
+          "404": { "description": "User not found" }
         }
       }
     }
