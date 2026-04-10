@@ -68,7 +68,6 @@ const userSchema = Joi.object({
     })
 })
 
-
 // Update User Schema (ALL optional but at least one required)
 const updateUserSchema = Joi.object({
     firstName: baseUserFields.firstName.optional(),

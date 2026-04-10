@@ -78,7 +78,7 @@ const updateUser = async (req, res, next) => {
             return res.status(400).json({ message: "Invalid user ID" })
         }
 
-        const { firstName, lastName, email, password, role } = req.body
+        const { firstName, lastName, email, password, role, address, phone } = req.body
 
         if (!firstName && !lastName && !email && !password && !role) {
             return res.status(400).json({ message: "No field provided to update" })
@@ -103,6 +103,18 @@ const updateUser = async (req, res, next) => {
                 return res.status(400).json({ message: "Password must be at least 6 characters" })
             }
             updatedFields.password = await bcrypt.hash(password, 10)
+        }
+
+        if (role && role.trim() !== "") {
+            updatedFields.role = role
+        }
+
+        if (address && address.trim() !== "") {
+            updatedFields.address = address
+        }
+
+        if (phone && phone.trim() !== "") {
+            updatedFields.phone = phone
         }
 
         updatedFields.updatedAt = new Date()
