@@ -9,7 +9,7 @@ router.get("/", (req, res) => {
 
 router.use("/contacts", ensureAuthenticated, require("./contacts"))
 router.use("/transactions", ensureAuthenticated, require("./transactions"))
-router.use("/accounts", require("./accounts"))
+router.use("/accounts", ensureAuthenticated, require("./accounts"))
 router.use("/users", ensureAuthenticated, require("./users"))
 router.use("/cards", ensureAuthenticated, require("./cards"))
 

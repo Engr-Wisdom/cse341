@@ -50,7 +50,7 @@ const createAccount = async (req, res, next) => {
     // Validate required fields
     const { userId, bankName, accountType, balance, currency } = req.body;
 
-    const isValidUser = await accountExists(userId)
+    const isValidUser = await userExists(userId)
 
     if (!isValidUser) {
         return res.status(400).json({
@@ -63,7 +63,7 @@ const createAccount = async (req, res, next) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    const account = {
+    const newAccount = {
       userId,
       bankName,
       accountNumber: generateAccountNumber(),
@@ -74,7 +74,7 @@ const createAccount = async (req, res, next) => {
       updatedAt: new Date(),
     };
 
-    const result = await mongodb.getdb().collection("accounts").insertOne(account);
+    const result = await mongodb.getdb().collection("accounts").insertOne(newAccount);
 
     res.status(201).json(result);
   } catch (error) {
