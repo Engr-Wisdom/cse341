@@ -15,14 +15,6 @@ const cardSchema = Joi.object({
     "string.base": "Name must be a string"
   }),
 
-  cardNumber: Joi.string().min(10).max(25).required().messages({
-    "any.required": "Card number is required",
-    "string.empty": "Card number cannot be empty",
-    "string.min": "Card number must be at least 10 characters",
-    "string.max": "Card number cannot exceed 25 characters",
-    "string.base": "Card number must be a string"
-  }),
-
   cardType: Joi.string().valid("debit", "credit", "virtual").required().messages({
     "any.required": "Card type is required",
     "any.only": "Card type must be one of: debit, credit, virtual",
@@ -34,11 +26,7 @@ const cardSchema = Joi.object({
     "any.only": "Brand must be either visa or mastercard",
     "string.empty": "Brand cannot be empty"
   }),
-
-  expiryDate: Joi.string().required().messages({
-    "any.required": "Expiry date is required",
-    "string.empty": "Expiry date cannot be empty"
-  }),
+  
 
   status: Joi.string().valid("active", "blocked").optional().messages({
     "any.only": "Status must be either active or blocked"
@@ -47,10 +35,8 @@ const cardSchema = Joi.object({
 
 const updateCardSchema = Joi.object({
   name: Joi.string().min(2).max(50).optional(),
-  cardNumber: Joi.string().min(10).max(25).optional(),
   cardType: Joi.string().valid("debit", "credit", "virtual").optional(),
   brand: Joi.string().valid("visa", "mastercard").optional(),
-  expiryDate: Joi.string().optional(),
   status: Joi.string().valid("active", "blocked").optional()
 }).min(1).messages({
   "object.min": "At least one field is required to update"

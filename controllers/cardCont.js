@@ -55,7 +55,7 @@ const getSingle = async (req, res) => {
 
 const createCard = async (req, res) => {
   try {
-    const { accountId, name, cardNumber, cardType, brand, expiryDate, status } = req.body;
+    const { accountId, name, cardType, brand, status } = req.body;
 
     const isValidAccount = await accountExists(accountId)
 
