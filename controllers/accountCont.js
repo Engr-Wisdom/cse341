@@ -1,6 +1,15 @@
 const mongodb = require("../database/mongodb");
 const { ObjectId } = require("mongodb");
 
+const userExists = async (userId) => {
+    try {
+        const account = await mongodb.getdb().collection("users").findOne({ _id: new ObjectId(userId) })
+        return account ? true : false
+    } catch(error) {
+        return false
+    }
+}
+
 const generateAccountNumber = () => {
   let number = "";
   for (let i = 0; i < 10; i++) {
@@ -41,7 +50,16 @@ const createAccount = async (req, res, next) => {
     // Validate required fields
     const { userId, bankName, accountType, balance, currency } = req.body;
 
-    if (!userId || !bankName || !accountNumber || !accountType) {
+    const isValidUser = await accountExists(userId)
+
+    if (!isValidUser) {
+        return res.status(400).json({
+            success: false,
+            message: "User does not exist. Cannot create card." 
+        })
+    }
+
+    if (!userId || !bankName || !accountType) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
