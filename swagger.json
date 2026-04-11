@@ -280,8 +280,7 @@
               "required": ["userId", "bankName", "accountNumber", "accountType"],
               "properties": {
                 "userId": { "type": "string", "example": "" },
-                "bankName": { "type": "string", "example": "" },
-                "accountNumber": { "type": "number", "example": "" },
+                "bankName": { "type": "string", "example": "Paypal" },
                 "accountType": { "type": "string", "example": "savings" },
                 "balance": { "type": "number", "example": 0 },
                 "currency": { "type": "string", "example": "USD" }
