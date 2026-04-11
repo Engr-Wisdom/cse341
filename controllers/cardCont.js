@@ -3,7 +3,7 @@ const { ObjectId } = require("mongodb");
 
 const accountExists = async (accountId) => {
     try {
-        const account = await mongodb.getdb().collection("cards").findOne({ _id: new ObjectId(accountId) })
+        const account = await mongodb.getdb().collection("accounts").findOne({ _id: new ObjectId(accountId) })
         return account ? true : false
     } catch(error) {
         return false
