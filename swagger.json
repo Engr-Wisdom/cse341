@@ -66,7 +66,7 @@
           }
         ],
         "responses": {
-          "200": { "description": "Created successfully" }
+          "201": { "description": "Created successfully" }
         }
       }
     },
@@ -173,7 +173,7 @@
           }
         ],
         "responses": {
-          "200": { "description": "Created successfully" },
+          "201": { "description": "Created successfully" },
           "400": { "description": "Validation error" }
         }
       }
@@ -442,7 +442,6 @@
         }
       }
     },
-
     "/cards": {
       "get": {
         "description": "Get all cards",
@@ -450,32 +449,32 @@
           "200": {
             "description": "OK"
           }
-        },
-        "post": {
-          "description": "Create a new card (accountId must exist)",
-          "parameters": [
-            {
-              "name": "body",
-              "in": "body",
-              "required": true,
-              "schema": {
-                "type": "object",
-                "required": ["accountId", "name", "cardType", "brand", "expiryDate"],
-                "properties": {
-                  "accountId": { "type": "string", "example": "" },
-                  "name": { "type": "string", "example": "" },
-                  "cardType": { "type": "string", "example": "debit" },
-                  "brand": { "type": "string", "example": "visa" },
-                  "status": { "type": "string", "example": "active" }
-                }
+        }
+      },
+      "post": {
+        "description": "Create a new card (accountId must exist)",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["accountId", "name", "cardType", "brand"],
+              "properties": {
+                "accountId": { "type": "string", "example": "" },
+                "name": { "type": "string", "example": "" },
+                "cardType": { "type": "string", "example": "debit" },
+                "brand": { "type": "string", "example": "visa" },
+                "status": { "type": "string", "example": "active" }
               }
             }
-          ], 
-          "responses": {
-            "201": { "description": "Card created successfully" },
-            "400": { "description": "Validation error" },
-            "500": { "description": "Account does not exist" }
           }
+        ],
+        "responses": {
+          "201": { "description": "Card created successfully" },
+          "400": { "description": "Validation error" },
+          "404": { "description": "Account does not exist" }
         }
       }
     },
