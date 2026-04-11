@@ -1,6 +1,14 @@
 const mongodb = require("../database/mongodb");
 const { ObjectId } = require("mongodb");
 
+const generateAccountNumber = () => {
+  let number = "";
+  for (let i = 0; i < 10; i++) {
+    number += Math.floor(Math.random() * 10)
+  }
+  return number
+}
+
 // GET ALL
 const getAll = async (req, res, next) => {
   try {
@@ -31,7 +39,7 @@ const getSingle = async (req, res, next) => {
 const createAccount = async (req, res, next) => {
   try {
     // Validate required fields
-    const { userId, bankName, accountNumber, accountType, balance, currency } = req.body;
+    const { userId, bankName, accountType, balance, currency } = req.body;
 
     if (!userId || !bankName || !accountNumber || !accountType) {
       return res.status(400).json({ error: "Missing required fields" });
@@ -40,7 +48,7 @@ const createAccount = async (req, res, next) => {
     const account = {
       userId,
       bankName,
-      accountNumber,
+      accountNumber: generateAccountNumber(),
       accountType,
       balance: balance || 0,
       currency: currency || "USD",

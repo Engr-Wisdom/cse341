@@ -68,7 +68,7 @@ const createCard = async (req, res) => {
 
     const newCard = {
       accountId,
-      name,
+      name: name.toUpperCase(),
       cardNumber: generateCardNumber(),
       cardType,
       brand,

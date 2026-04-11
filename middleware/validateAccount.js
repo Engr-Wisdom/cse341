@@ -14,13 +14,6 @@ const accountSchema = Joi.object({
     "string.max": "Bank name cannot exceed 50 characters",
     "string.base": "Bank name must be a string"
   }),
-  accountNumber: Joi.string().min(5).max(20).required().messages({
-    "any.required": "Account number is required",
-    "string.empty": "Account number cannot be empty",
-    "string.min": "Account number must be at least 5 characters",
-    "string.max": "Account number cannot exceed 20 characters",
-    "string.base": "Account number must be a string"
-  }),
   accountType: Joi.string().valid("savings", "current", "wallet").required().messages({
     "any.required": "Account type is required",
     "any.only": "Account type must be one of: savings, current, wallet",
