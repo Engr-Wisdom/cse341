@@ -441,6 +441,104 @@
           "404": { "description": "User not found" }
         }
       }
+    },
+
+    "/cards": {
+      "get": {
+        "description": "Get all cards",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "post": {
+          "description": "Create a new card (accountId must exist)",
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "required": ["accountId", "name", "cardType", "brand", "expiryDate"],
+                "properties": {
+                  "accountId": { "type": "string", "example": "" },
+                  "name": { "type": "string", "example": "" },
+                  "cardType": { "type": "string", "example": "debit" },
+                  "brand": { "type": "string", "example": "visa" },
+                  "status": { "type": "string", "example": "active" }
+                }
+              }
+            }
+          ], 
+          "responses": {
+            "201": { "description": "Card created successfully" },
+            "400": { "description": "Validation error" },
+            "500": { "description": "Account does not exist" }
+          }
+        }
+      }
+    },
+    "/cards/{id}": {
+      "get": {
+        "description": "Get card by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "400": { "description": "Card not found" }
+        }
+      },
+      "put": {
+        "description": "Update card",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string", "example": "Wisdom Updated"},
+                "cardType": { "type": "string", "example": "debit" },
+                "brand": { "type": "string", "example": "visa" },
+                "status": { "type": "string", "example": "active" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Updated successfully" },
+          "400": { "description": "Card not found" }
+        }
+      },
+      "delete": {
+        "description": "Delete card",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Deleted successfully" },
+          "400": { "description": "Card not found" }
+        }
+      }
     }
   }
 }
