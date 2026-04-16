@@ -147,9 +147,13 @@
             "required": true,
             "schema": {
               "type": "object",
-              "required": ["amount", "date"],
+              "required": ["amount", "date", "paymentMethod", "invoiceNumber"],
               "properties": {
-                "amount": { "type": "number", "example": 0 },
+                "amount": {
+                  "type": "number",
+                  "minimum": 0.01,
+                  "example": 1500.50
+                },
                 "date": {
                   "type": "string",
                   "format": "date-time",
@@ -157,24 +161,54 @@
                 },
                 "paymentMethod": {
                   "type": "string",
+                  "enum": ["Cash", "Card", "Bank"],
                   "example": "Cash"
                 },
-                "status": { "type": "string", "example": "Pending" },
+                "status": {
+                  "type": "string",
+                  "enum": ["Pending", "Completed", "Failed"],
+                  "example": "Pending"
+                },
                 "invoiceNumber": {
                   "type": "string",
-                  "example": ""
+                  "example": "INV-1001"
                 },
                 "notes": {
                   "type": "string",
-                  "example": ""
+                  "example": "Payment for order #1234"
                 }
               }
             }
           }
         ],
         "responses": {
-          "201": { "description": "Created successfully" },
-          "400": { "description": "Validation error" }
+          "201": {
+            "description": "Created successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Transaction created successfully"
+                },
+                "data": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Amount must be a number"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -202,7 +236,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "example": "txn_123456"
           },
           {
             "name": "body",
@@ -211,7 +246,11 @@
             "schema": {
               "type": "object",
               "properties": {
-                "amount": { "type": "number", "example": 0 },
+                "amount": {
+                  "type": "number",
+                  "minimum": 0.01,
+                  "example": 2500.75
+                },
                 "date": {
                   "type": "string",
                   "format": "date-time",
@@ -219,16 +258,21 @@
                 },
                 "paymentMethod": {
                   "type": "string",
+                  "enum": ["Cash", "Card", "Bank"],
                   "example": "Card"
                 },
-                "status": { "type": "string", "example": "Paid" },
+                "status": {
+                  "type": "string",
+                  "enum": ["Pending", "Completed", "Failed"],
+                  "example": "Completed"
+                },
                 "invoiceNumber": {
                   "type": "string",
-                  "example": ""
+                  "example": "INV-1001"
                 },
                 "notes": {
                   "type": "string",
-                  "example": ""
+                  "example": "Updated payment for order #1234"
                 },
                 "createdAt": {
                   "type": "string",
@@ -240,8 +284,45 @@
           }
         ],
         "responses": {
-          "200": { "description": "Updated successfully" },
-          "404": { "description": "Not found" }
+          "200": {
+            "description": "Updated successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Transaction updated successfully"
+                },
+                "data": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Payment Method must be Cash, Card, or Bank"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Transaction not found"
+                }
+              }
+            }
+          }
         }
       },
       "delete": {
@@ -268,31 +349,77 @@
           "200": { "description": "OK" }
         }
       },
-      "post": {
-        "description": "Create a new account",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "required": ["userId", "bankName", "accountNumber", "accountType"],
-              "properties": {
-                "userId": { "type": "string", "example": "" },
-                "bankName": { "type": "string", "example": "Paypal" },
-                "accountType": { "type": "string", "example": "savings" },
-                "balance": { "type": "number", "example": 0 },
-                "currency": { "type": "string", "example": "USD" }
+    "post": {
+      "description": "Create a new account",
+      "parameters": [
+        {
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "required": ["userId", "bankName", "accountType"],
+            "properties": {
+              "userId": {
+                "type": "string",
+                "example": "user_123456"
+              },
+              "bankName": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 50,
+                "example": "PayPal"
+              },
+              "accountType": {
+                "type": "string",
+                "enum": ["savings", "current", "wallet"],
+                "example": "savings"
+              },
+              "balance": {
+                "type": "number",
+                "minimum": 0,
+                "example": 5000
+              },
+              "currency": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 3,
+                "example": "USD"
               }
             }
           }
-        ],
-        "responses": {
-          "201": { "description": "Created successfully" },
-          "400": { "description": "Validation error" }
+        }
+      ],
+      "responses": {
+        "201": {
+          "description": "Created successfully",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Account created successfully"
+              },
+              "data": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Validation error",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Bank name must be at least 2 characters"
+              }
+            }
+          }
         }
       }
+    }
     },
 
     "/accounts/{id}": {
@@ -309,24 +436,81 @@
       "put": {
         "description": "Update account fields",
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string" },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "example": "acc_123456"
+          },
           {
             "name": "body",
             "in": "body",
             "required": true,
             "schema": {
               "type": "object",
+              "minProperties": 1,
               "properties": {
-                "balance": { "type": "number", "example": 0 },
-                "currency": { "type": "string", "example": "USD" },
-                "accountType": { "type": "string", "example": "savings" }
+                "balance": {
+                  "type": "number",
+                  "minimum": 0,
+                  "example": 7500
+                },
+                "currency": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 3,
+                  "example": "USD"
+                },
+                "accountType": {
+                  "type": "string",
+                  "enum": ["savings", "current", "wallet"],
+                  "example": "savings"
+                }
               }
             }
           }
         ],
         "responses": {
-          "200": { "description": "Updated successfully" },
-          "404": { "description": "Not found" }
+          "200": {
+            "description": "Updated successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Account updated successfully"
+                },
+                "data": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "At least one field (balance, currency, accountType) is required to update"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Account not found"
+                }
+              }
+            }
+          }
         }
       },
       "delete": {
@@ -357,22 +541,76 @@
             "required": true,
             "schema": {
               "type": "object",
-              "required": ["firstName", "lastName", "email", "password"],
+              "required": ["firstName", "lastName", "email", "password", "address"],
               "properties": {
-                "firstName": { "type": "string", "example": "John" },
-                "lastName": { "type": "string", "example": "Doe" },
-                "email": { "type": "string", "example": "john@example.com" },
-                "password": { "type": "string", "example": "password123" },
-                "role": { "type": "string", "example": "user" },
-                "phone": { "type": "string", "example": "+2348012345678" },
-                "address": { "type": "string", "example": "Port Harcourt, Nigeria" }
+                "firstName": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 50,
+                  "example": "John"
+                },
+                "lastName": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 50,
+                  "example": "Doe"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "example": "john@example.com"
+                },
+                "password": {
+                  "type": "string",
+                  "minLength": 6,
+                  "example": "password123"
+                },
+                "role": {
+                  "type": "string",
+                  "enum": ["admin", "user"],
+                  "example": "user"
+                },
+                "phone": {
+                  "type": "string",
+                  "pattern": "^[0-9+]{10,15}$",
+                  "example": "+2348012345678"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "Port Harcourt, Nigeria"
+                }
               }
             }
           }
         ],
         "responses": {
-          "201": { "description": "User created successfully" },
-          "400": { "description": "Validation error" }
+          "201": {
+            "description": "User created successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User created successfully"
+                },
+                "data": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "First name must be at least 3 characters"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -393,14 +631,15 @@
           "404": { "description": "User not found" }
         }
       },
-      "put": {
+     "put": {
         "description": "Update user",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "example": "user_123456"
           },
           {
             "name": "body",
@@ -408,21 +647,83 @@
             "required": true,
             "schema": {
               "type": "object",
+              "minProperties": 1,
               "properties": {
-                "firstName": { "type": "string", "example": "John" },
-                "lastName": { "type": "string", "example": "Doe" },
-                "email": { "type": "string", "example": "john@example.com" },
-                "role": { "type": "string", "example": "admin" },
-                "phone": { "type": "string", "example": "+2348012345678" },
-                "address": { "type": "string", "example": "Lagos, Nigeria" }
+                "firstName": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 50,
+                  "example": "John"
+                },
+                "lastName": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 50,
+                  "example": "Doe"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "example": "john@example.com"
+                },
+                "role": {
+                  "type": "string",
+                  "enum": ["admin", "user"],
+                  "example": "user"
+                },
+                "phone": {
+                  "type": "string",
+                  "pattern": "^[0-9+]{10,15}$",
+                  "example": "+2348012345678"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "Lagos, Nigeria"
+                }
               }
             }
           }
         ],
         "responses": {
-          "200": { "description": "User updated successfully" },
-          "400": { "description": "Validation error" },
-          "404": { "description": "User not found" }
+          "200": {
+            "description": "User updated successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User updated successfully"
+                },
+                "data": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "At least one field is required to update"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User not found"
+                }
+              }
+            }
+          }
         }
       },
       "delete": {
@@ -461,19 +762,75 @@
               "type": "object",
               "required": ["accountId", "name", "cardType", "brand"],
               "properties": {
-                "accountId": { "type": "string", "example": "" },
-                "name": { "type": "string", "example": "" },
-                "cardType": { "type": "string", "example": "debit" },
-                "brand": { "type": "string", "example": "visa" },
-                "status": { "type": "string", "example": "active" }
+                "accountId": {
+                  "type": "string",
+                  "example": "acc_123456"
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 50,
+                  "example": "Wisdom John"
+                },
+                "cardType": {
+                  "type": "string",
+                  "enum": ["debit", "credit", "virtual"],
+                  "example": "debit"
+                },
+                "brand": {
+                  "type": "string",
+                  "enum": ["visa", "mastercard"],
+                  "example": "visa"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["active", "blocked"],
+                  "example": "active"
+                }
               }
             }
           }
         ],
         "responses": {
-          "201": { "description": "Card created successfully" },
-          "400": { "description": "Validation error" },
-          "404": { "description": "Account does not exist" }
+          "201": {
+            "description": "Card created successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Card created successfully"
+                },
+                "data": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Card type must be one of: debit, credit, virtual"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Account does not exist",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Account not found"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -500,7 +857,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "example": "card_123456"
           },
           {
             "name": "body",
@@ -508,18 +866,73 @@
             "required": true,
             "schema": {
               "type": "object",
+              "minProperties": 1,
               "properties": {
-                "name": { "type": "string", "example": "Wisdom Updated"},
-                "cardType": { "type": "string", "example": "debit" },
-                "brand": { "type": "string", "example": "visa" },
-                "status": { "type": "string", "example": "active" }
+                "name": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 50,
+                  "example": "Wisdom Updated"
+                },
+                "cardType": {
+                  "type": "string",
+                  "enum": ["debit", "credit", "virtual"],
+                  "example": "credit"
+                },
+                "brand": {
+                  "type": "string",
+                  "enum": ["visa", "mastercard"],
+                  "example": "visa"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["active", "blocked"],
+                  "example": "active"
+                }
               }
             }
           }
         ],
         "responses": {
-          "200": { "description": "Updated successfully" },
-          "400": { "description": "Card not found" }
+          "200": {
+            "description": "Updated successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Card updated successfully"
+                },
+                "data": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "At least one field is required to update"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Card not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Card not found"
+                }
+              }
+            }
+          }
         }
       },
       "delete": {
