@@ -75,6 +75,6 @@ async function startServer(port) {
   await mongodb.initdb();
 
   app.listen(port, () => {
-    console.log(`Server is running on ${port}`);
+    console.log(`Server is running on http://localhost:${port}`);
   });
 }
